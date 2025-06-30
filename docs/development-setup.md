@@ -180,6 +180,45 @@ Moved to `.browserslistrc` for better tool compatibility:
 4. **Build/Deploy**: Run build commands or push to trigger GitHub Actions
 5. **Commit**: Git hooks run quality checks automatically
 
+## Developer Tools & IDE Setup
+
+### VS Code Snippets
+
+The project includes custom VS Code snippets in `.vscode/component.code-snippets`:
+
+**React Component Snippet:**
+
+- **Trigger**: `r-component`
+- **Description**: Creates a React component with the file name as the component name
+- **Usage**: Type `r-component` in a new `.tsx` file and press Tab
+
+```typescript
+// Generated snippet example (for file named "MyComponent.tsx"):
+import React from 'react';
+
+const MyComponent: React.FC = () => {
+  return <></>;
+};
+
+export default MyComponent;
+```
+
+**Benefits:**
+
+- Consistent component structure across the project
+- Automatic component naming based on file name
+- Proper TypeScript typing with React.FC
+- Saves time with boilerplate code generation
+
+**How to Use:**
+
+1. Create a new `.tsx` file with your desired component name
+2. Type `r-component`
+3. Press Tab to expand the snippet
+4. The cursor will be positioned inside the return statement
+
+> **💡 Tip**: You can extend the snippets file with additional patterns like hooks, API routes, or page components.
+
 ## Future Improvements
 
 ### Testing Setup
@@ -201,3 +240,48 @@ Consider adding:
 - **Lighthouse CI**: Automated performance testing
 - **Bundle Analysis**: Track bundle size changes
 - **Core Web Vitals**: Monitor real user metrics
+
+### Toast Notifications
+
+**React Hot Toast Integration:**
+
+- **Library**: `react-hot-toast` for user feedback
+- **Configuration**: Centralized in `src/constants.tsx`
+- **Duration**: 6 seconds (6000ms) by default
+- **Styling**: Consistent with application theme
+
+**Global Setup:**
+
+```typescript
+// In src/app/layout.tsx
+<Toaster
+  toastOptions={{
+    style: {
+      fontSize: "0.875rem",
+    },
+    duration: TOASTER_DURATION_MS, // 6000ms
+  }}
+/>
+```
+
+**Usage Examples:**
+
+```typescript
+import toast from "react-hot-toast";
+
+// Success notification
+toast.success("Contact form submitted successfully!");
+
+// Error notification
+toast.error("An error occurred while sending the message.");
+
+// Loading notification
+const loadingToast = toast.loading("Sending message...");
+toast.dismiss(loadingToast);
+```
+
+**Configuration:**
+
+- **Duration**: Customizable via `TOASTER_DURATION_MS` constant
+- **Positioning**: Default positioning (top-center)
+- **Styling**: Integrated with application design system

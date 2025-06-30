@@ -26,6 +26,7 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
   - TypeScript for full type safety
   - Tailwind CSS v4 for styling
   - shadcn/ui components
+  - React Hot Toast for notifications
   - AWS SES for email functionality
 
 - **☁️ Serverless Infrastructure**:
@@ -37,6 +38,7 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
 - **🛠️ Developer Experience**:
   - ESLint + Prettier with pre-commit hooks
   - Hot reload and fast development
+  - VS Code snippets for rapid component creation
   - Comprehensive documentation
 
 ## Quick Start
@@ -141,6 +143,8 @@ const stage = getDeploymentEnv(); // "dev" or "prod"
 ```
 ├── .github/workflows/       # GitHub Actions CI/CD
 ├── .husky/                 # Git hooks
+├── .vscode/                # VS Code snippets and settings
+│   └── component.code-snippets
 ├── docs/                   # Detailed documentation
 ├── src/
 │   ├── app/               # Next.js App Router

@@ -3,7 +3,7 @@
  */
 
 /** Email address where contact form submissions will be sent */
-export const CONTACT_EMAIL = "johndoe@gmail.com";
+export const CONTACT_EMAIL = "contact@yourcompany.com";
 
 /** Site metadata */
 export const SITE_TITLE = "Next.js SST Starter";

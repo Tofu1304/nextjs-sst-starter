@@ -2,6 +2,8 @@
 
 This document explains the development tools and configuration choices made in this project.
 
+> **🏗️ For AWS infrastructure details**, see [Architecture Overview](./architecture.md)
+
 ## Code Quality Tools
 
 ### ESLint Configuration
@@ -154,12 +156,15 @@ Moved to `.browserslistrc` for better tool compatibility:
 
 ### Development
 
-- `npm run dev`: Start development server with Turbopack
+- `./start-local-sso.sh`: Start development server with AWS SSO authentication (recommended)
+- `npm run dev`: Start development server with Turbopack (requires manual AWS setup)
 - `npm run typecheck`: Type checking without emitting files
+
+> **⚠️ Important**: Use `start-local-sso.sh` for proper AWS integration. Stop the script before running build commands or Prisma operations.
 
 ### Build & Deploy
 
-- `npm run build`: Production build
+- `npm run build`: Production build (stop SSO script first)
 - `npm run start`: Start production server
 
 ### Quality Assurance
@@ -169,10 +174,11 @@ Moved to `.browserslistrc` for better tool compatibility:
 
 ## Recommended Workflow
 
-1. **Start Development**: `npm run dev`
+1. **Start Development**: `./start-local-sso.sh`
 2. **Make Changes**: Edit files, auto-formatting on save
-3. **Commit**: Git hooks run quality checks automatically
-4. **Deploy**: Push to trigger GitHub Actions
+3. **Stop Script**: Press any key to stop the SSO script before building
+4. **Build/Deploy**: Run build commands or push to trigger GitHub Actions
+5. **Commit**: Git hooks run quality checks automatically
 
 ## Future Improvements
 

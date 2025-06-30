@@ -2,6 +2,8 @@
 
 This document provides detailed instructions for setting up AWS infrastructure and deployment pipelines.
 
+> **🏗️ For detailed architecture information**, see [Architecture Overview](./architecture.md)
+
 ## AWS IAM Identity Center Setup
 
 Setting up IAM Identity Center allows you to manage user access centrally and securely.
@@ -61,6 +63,83 @@ Or use our provided script:
 ```bash
 ./start-local-sso.sh
 ```
+
+## Deployment Options
+
+You can deploy this application in two ways:
+
+### Option 1: Domain-less Deployment (Simpler)
+
+For quick deployment without a custom domain, you can use the default CloudFront distribution URL.
+
+**Configuration Steps:**
+
+1. **Update SST Configuration** in `sst.config.ts`:
+
+   ```typescript
+   // Remove or comment out the domain configuration
+   new sst.aws.Nextjs("NextApp", {
+     // domain: {
+     //   name: domainName,
+     //   dns: sst.aws.dns({
+     //     zone: "YOUR_DOMAIN_HOSTED_ZONE_ID",
+     //   }),
+     // },
+     environment: {
+       DEPLOYMENT_ENV: $app.stage,
+     },
+     link: [...identities],
+   });
+   ```
+
+2. **Update Email Configuration** (if using domain-based email):
+
+   ```typescript
+   // Use individual email identity instead of domain identity
+   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "contact@yourcompany.com" }];
+
+   // Remove domain identity or keep it if you have a domain elsewhere
+   // const domainIdentity = new sst.aws.Email("NextEmail", {
+   //   sender: domainName,
+   //   dmarc: "v=DMARC1; p=quarantine; adkim=s; aspf=s;",
+   // });
+
+   const identities = [
+     ...emailIdentities.map((identity) => new sst.aws.Email(identity.name, { sender: identity.sender })),
+   ];
+   ```
+
+3. **Deploy the Application**:
+
+   ```bash
+   npx sst deploy --stage dev
+   ```
+
+4. **Access Your Application**:
+   After deployment, SST will provide a CloudFront URL like:
+
+   ```
+   ✓  Complete
+   App: your-app-name
+   Stage: dev
+
+   NextApp: https://d123abc456def.cloudfront.net
+   ```
+
+**Benefits of Domain-less Deployment:**
+
+- ✅ Faster setup (no domain purchase or DNS configuration required)
+- ✅ No additional costs for domain registration or Route53 hosted zones
+- ✅ Immediate deployment without DNS propagation wait times
+- ✅ Perfect for development, testing, or internal applications
+
+**Limitations:**
+
+- ❌ URL is not user-friendly (random CloudFront domain)
+- ❌ Cannot customize the domain name
+- ❌ SSL certificate is managed by AWS (cannot use custom certificates)
+
+### Option 2: Custom Domain Configuration
 
 ## Domain Configuration (Optional)
 
@@ -144,14 +223,14 @@ This project includes a contact form that sends emails using AWS Simple Email Se
 
    ```typescript
    // In src/constants.tsx
-   export const CONTACT_EMAIL = "your-email@example.com";
+   export const CONTACT_EMAIL = "contact@yourcompany.com";
    ```
 
 2. **Configure the email identities** in your `sst.config.ts`:
 
    ```typescript
    // In sst.config.ts
-   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "your-email@example.com" }];
+   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "contact@yourcompany.com" }];
    ```
 
 3. **Deploy the application** using SST (the SES configuration is included in the deployment)
@@ -220,3 +299,62 @@ We've included Docker configuration files to run SST in a Linux environment on W
    ```
 
 This approach ensures you get proper TypeScript definitions and SST tooling support even on Windows systems.
+
+---
+
+## Troubleshooting
+
+### Development Issues
+
+**Build Fails While SSO Script is Running:**
+
+- **Problem**: Running `npm run build` or Prisma commands while `start-local-sso.sh` is active
+- **Solution**: Stop the SSO script (press any key) before running build commands
+- **Reason**: The script locks the terminal session and can interfere with build processes
+
+**AWS Credentials Not Found:**
+
+- **Problem**: Contact form or SES functionality not working in development
+- **Solution**: Use `./start-local-sso.sh` instead of `npm run dev` directly
+- **Alternative**: Set AWS credentials manually in `.env.local`
+
+**SSO Login Fails:**
+
+- **Problem**: AWS SSO authentication errors
+- **Solution**:
+  1. Verify your `~/.aws/config` is correctly configured
+  2. Ensure your IAM Identity Center user has proper permissions
+  3. Try running `aws sso login --profile your-profile` manually
+
+### Deployment Issues
+
+**GitHub Actions Fail:**
+
+- **Problem**: Deployment workflows failing
+- **Solution**:
+  1. Verify environment secrets are correctly set
+  2. Ensure IAM service account has sufficient permissions
+  3. Check AWS region consistency across configuration
+
+**Email Verification Not Received:**
+
+- **Problem**: AWS SES verification emails not arriving
+- **Solution**:
+  1. Check spam folder
+  2. Verify email address is correctly configured in SST setup
+  3. Ensure AWS SES service is available in your region
+
+**Domain Issues:**
+
+- **Problem**: Custom domain not working
+- **Solution**:
+  1. Verify DNS propagation (can take up to 48 hours)
+  2. Check Route53 nameservers match domain registrar settings
+  3. Ensure SSL certificate is properly issued
+
+### General Tips
+
+- **Local Testing**: Contact form requires AWS SES configuration and won't work without proper AWS credentials
+- **Email Delivery**: Ensure AWS SES account is not in sandbox mode for production use
+- **Build Process**: Always stop the SSO script before running build commands or database operations
+- **Environment Consistency**: Use the same AWS region across all configurations

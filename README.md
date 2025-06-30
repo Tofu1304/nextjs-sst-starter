@@ -4,7 +4,14 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
 
 ## Features
 
-- **📝 Contact Form**: Fully functional contact form with validation
+- **📝 Contact Form**: F```bash
+  ./start-local-sso.sh # Start with AWS SSO (recommended)
+  npm run build # Build for production  
+  npm run start # Start production server
+  npm run lint # Run ESLint
+  npm run typecheck # Type checking
+
+````nctional contact form with validation
 
   - Name field (required)
   - Email field (required)
@@ -49,7 +56,7 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
    git clone <your-repo-url>
    cd nextjs-sst-starter
    npm install
-   ```
+````
 
 2. **Set up environment variables:**
 
@@ -59,14 +66,18 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
    ```
 
 3. **Start development server:**
+
    ```bash
-   npm run dev
+   ./start-local-sso.sh  # Recommended: Handles AWS SSO and starts dev server
    ```
+
+   > **⚠️ Important**: Use the SSO script for proper AWS authentication. The script automatically detects your AWS SSO profile. Running `npm run dev` directly won't have AWS credentials.
 
 ## Documentation
 
 - **📖 [Development Setup](./docs/development-setup.md)** - Development tools, code quality, and local setup
 - **🚀 [AWS Deployment](./docs/aws-deployment.md)** - Complete AWS setup and deployment guide
+- **🏗️ [Architecture Overview](./docs/architecture.md)** - Detailed AWS infrastructure and OpenNext architecture
 - **🔧 [Environment Guide](./docs/deployment-vs-runtime-environment.md)** - Understanding SST environments
 
 ## Quick Deploy
@@ -74,10 +85,12 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
 ### Local Development
 
 ```bash
-npm run dev                 # Start Next.js dev server
+./start-local-sso.sh       # Start with AWS SSO authentication (recommended)
 npm run build              # Build for production
 npm run start              # Start production server
 ```
+
+> **⚠️ Build Limitation**: Stop the `start-local-sso.sh` script before running build commands or Prisma operations, as the script locks the terminal session.
 
 ### AWS Deployment
 
@@ -95,13 +108,13 @@ The contact form sends emails via AWS SES. To configure:
 1. **Set your contact email** in `src/constants.tsx`:
 
    ```typescript
-   export const CONTACT_EMAIL = "your-email@example.com";
+   export const CONTACT_EMAIL = "contact@yourcompany.com";
    ```
 
 2. **Configure email identity** in `sst.config.ts`:
 
    ```typescript
-   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "your-email@example.com" }];
+   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "contact@yourcompany.com" }];
    ```
 
 3. **Deploy and verify your email** - AWS will send a verification email after deployment
@@ -158,7 +171,7 @@ const stage = getDeploymentEnv(); // "dev" or "prod"
 ## Scripts
 
 ```bash
-npm run dev          # Start development server
+./start-local-sso.sh     # Start with AWS SSO (recommended)
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint

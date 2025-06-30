@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  ubuntu-dev:
+    build: .
+    container_name: ubuntu-dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: bash

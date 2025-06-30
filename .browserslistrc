@@ -1,0 +1,8 @@
+# This file defines the browsers that your project supports
+# It's used by tools like Autoprefixer, Babel, and other build tools
+# See https://github.com/browserslist/browserslist for more info
+
+> 1%
+last 2 versions
+not dead
+not ie <= 11

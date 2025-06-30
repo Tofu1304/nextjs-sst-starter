@@ -1,0 +1,57 @@
+{
+  "name": "bojidaryovchev.dev",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --turbopack",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "lint-staged:eslint:fix": "eslint --fix **/*.{js,mjs,ts,tsx}",
+    "lint-staged:prettier:write": "prettier --write **/*.{js,mjs,ts,tsx,css,md,json}",
+    "prepare": "husky install",
+    "start": "next start"
+  },
+  "lint-staged": {
+    "*.{js,mjs,ts,tsx,css,md,json}": [
+      "npm run lint-staged:prettier:write"
+    ],
+    "*.{js,mjs,ts,tsx}": [
+      "npm run lint-staged:eslint:fix"
+    ]
+  },
+  "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.840.0",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "motion": "^12.16.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "sst": "3.17.8",
+    "tailwind-merge": "^3.3.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-tailwindcss": "^0.6.12",
+    "sst": "^3.17.0",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.3",
+    "typescript": "^5"
+  }
+}

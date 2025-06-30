@@ -1,0 +1,15 @@
+{
+  "React Component": {
+    "prefix": "r-component",
+    "body": [
+      "import React from 'react';",
+      "",
+      "const ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}: React.FC = () => {",
+      "  return <>$0</>;",
+      "};",
+      "",
+      "export default ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/};",
+    ],
+    "description": "Creates a React component with the file name as the component name.",
+  },
+}

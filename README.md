@@ -4,14 +4,7 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
 
 ## Features
 
-- **📝 Contact Form**: F```bash
-  ./start-local-sso.sh # Start with AWS SSO (recommended)
-  npm run build # Build for production  
-  npm run start # Start production server
-  npm run lint # Run ESLint
-  npm run typecheck # Type checking
-
-````nctional contact form with validation
+- **📝 Contact Form**: Fully functional contact form with validation
 
   - Name field (required)
   - Email field (required)
@@ -58,7 +51,7 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
    git clone <your-repo-url>
    cd nextjs-sst-starter
    npm install
-````
+   ```
 
 2. **Set up environment variables:**
 

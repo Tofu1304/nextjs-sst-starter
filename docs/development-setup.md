@@ -89,7 +89,7 @@ npx shadcn@latest add [component-name]
 
 - **Strict Mode**: Enabled for maximum type safety
 - **Path Aliases**: `@/` points to `src/` directory
-- **SST Types**: Auto-generated in `sst-env.d.ts`
+- **SST Types**: Defined in `src/typings/sst-env.d.ts` (manually maintained)
 
 ### Import Organization
 
@@ -100,11 +100,61 @@ npx shadcn@latest add [component-name]
 
 ### SST Environment Types
 
-The `sst-env.d.ts` file provides TypeScript definitions for SST resources:
+The `src/typings/sst-env.d.ts` file provides TypeScript definitions for SST resources and is **manually maintained** for type safety:
+
+```typescript
+// src/typings/sst-env.d.ts - manually maintained for type safety
+import "sst";
+export {};
+declare module "sst" {
+  export interface Resource {
+    NextEmail: {
+      type: "sst.aws.Email";
+      sender: string;
+    };
+    SupportEmail: {
+      type: "sst.aws.Email";
+      sender: string;
+    };
+  }
+}
+```
+
+**Key Points**:
+
+- ✅ **Manually maintained**: You update this file when adding new SST resources
+- ✅ **Type-safe**: Provides full TypeScript support for `Resource` object
+- ✅ **Custom definitions**: Define exactly what properties each resource exposes
+- ⚠️ **Keep in sync**: Update when you add/remove resources in `sst.config.ts`
+
+**Usage in Your Code**:
 
 ```typescript
 import { Resource } from "sst";
-// Resource.NextEmail.sender is fully typed!
+
+// Type-safe access to your SES email resources
+const supportEmail = Resource.SupportEmail.sender; // "contact@yourcompany.com"
+const nextEmail = Resource.NextEmail.sender;
+```
+
+**Adding New Resources**:
+
+When you add new resources to `sst.config.ts`, update the type definitions:
+
+```typescript
+// 1. Add resource to sst.config.ts
+const database = new sst.aws.Postgres("Database", { ... });
+
+// 2. Update src/typings/sst-env.d.ts
+declare module "sst" {
+  export interface Resource {
+    // ...existing resources...
+    Database: {
+      type: "sst.aws.Postgres";
+      connectionString: string;
+    };
+  }
+}
 ```
 
 ### Environment Variables

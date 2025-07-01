@@ -59,18 +59,23 @@ The application uses a modern serverless architecture built on AWS, leveraging S
 - `sst.aws.Email`: SES email identity management
 - `sst.aws.dns`: Route53 DNS management (when using custom domains)
 
-### 2. OpenNext Integration
+## OpenNext Integration
 
 **What is OpenNext?**
-OpenNext is an open-source implementation that enables Next.js applications to run on AWS Lambda and other serverless platforms. SST's Next.js construct uses OpenNext under the hood.
+OpenNext enables Next.js applications to run on AWS Lambda. SST's Next.js construct uses OpenNext v3.6.2, which supports Next.js 15.3.2.
 
-**Key Features**:
+**Key Features for Our Project**:
 
-- **Server-Side Rendering (SSR)**: Dynamic pages rendered on Lambda
+- **Server-Side Rendering (SSR)**: Contact form and dynamic pages rendered on Lambda
 - **Static Site Generation (SSG)**: Pre-built pages served from S3
-- **Incremental Static Regeneration (ISR)**: Background page updates
-- **API Routes**: Serverless functions for backend logic
-- **Middleware**: Edge computing for request/response processing
+- **API Routes**: Contact form API endpoint as serverless function
+- **Middleware**: Edge computing for request/response processing (if needed)
+
+**Project-Specific Edge Cases**:
+
+- **Contact Form POST**: Handled via API route with SES integration
+- **Environment Variables**: Deployment-specific variables managed through SST
+- **ARM64 Optimization**: Uses Graviton2 processors for better cost/performance
 
 ## Detailed AWS Infrastructure
 
@@ -427,18 +432,31 @@ graph LR
     SES --> Live
 ```
 
-## Latest OpenNext & SST Features (2025)
+## Latest Compatibility & Project Setup (2025)
 
-### OpenNext v3.6+ & Next.js 15.3+ Compatibility
+### Current Stack Versions
 
-**Current Versions Supported (as of January 2025):**
-
-- **OpenNext**: v3.6.2 (latest stable)
-- **Next.js**: 15.3.2 (fully supported)
+- **OpenNext**: v3.6.2 (supports Next.js 15.3.2)
+- **Next.js**: 15.3.2 with App Router
 - **SST**: v3.17+ with enhanced Next.js construct
-- **Node.js**: 18.18.0+ (20.x recommended for best performance)
+- **Node.js**: 20.x (ARM64 recommended for cost savings)
 
-> **📋 Compatibility Note**: OpenNext maintains excellent compatibility with Next.js releases. The latest OpenNext v3.6.2 supports Next.js 15.3.2 with all major features. Earlier Next.js 15.x versions are also supported.
+### Project-Specific Configuration
+
+**What's Included in This Starter**:
+
+- ✅ Contact form with Server Actions and SES integration
+- ✅ App Router with TypeScript support
+- ✅ Turbopack development mode
+- ✅ Environment variables through SST resource linking
+- ✅ AWS SES email functionality with verification
+
+**Edge Cases & Workarounds**:
+
+1. **Windows Development**: Docker setup required for SST initialization
+2. **Email Verification**: SES requires email verification in sandbox mode
+3. **Build Process**: Stop SSO script before running builds (terminal conflicts)
+4. **Environment Variables**: Use SST linking instead of manual env management
 
 ### OpenNext v3 Improvements
 
@@ -519,277 +537,215 @@ graph LR
 
 - **Optimized Bundle Packaging**: Better external package bundling with `bundlePagesRouterDependencies`
 - **Enhanced Middleware**: Improved middleware execution with better performance isolation
-- **Better Resource Handling**: Improved handling of static assets and dynamic content
-- **Advanced Configuration**: Enhanced `next.config.ts` with better type safety
 
-**Advanced Caching:**
+## Implementing ISR (Incremental Static Regeneration)
 
-- **Incremental Static Regeneration (ISR)**: Improved ISR with S3-based cache
-- **On-Demand Revalidation**: API-triggered cache invalidation
-- **Tag-based Revalidation**: Cache invalidation by tags
+ISR allows you to create static pages that can be updated without rebuilding the entire site. With OpenNext v3.6.2, ISR is fully supported with S3-based cache storage.
 
-### SST v3 Next.js Construct Features
+### Basic ISR Setup
 
-**Type-Safe Infrastructure:**
+**1. Time-based Revalidation (Simple)**
+
+Create a page that revalidates every hour:
 
 ```typescript
-// Enhanced type safety with SST v3
-const nextApp = new sst.aws.Nextjs("NextApp", {
-  // Fully typed configuration options
-  buildCommand: "npm run build",
+// src/app/blog/page.tsx
+export const revalidate = 3600; // Revalidate every hour
 
-  // Enhanced Lambda configuration
-  lambda: {
-    runtime: "nodejs20.x", // Latest Node.js runtime
-    architecture: "arm64", // Graviton2 processors
-    memory: "1024 MB", // Configurable memory
-    timeout: "30 seconds", // Configurable timeout
-    environment: {
-      // Type-safe environment variables
-      NODE_ENV: "production",
-    },
-  },
+export default async function BlogPage() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 3600 }
+  });
 
-  // Advanced CloudFront configuration
-  cloudfront: {
-    comment: "Next.js App Distribution",
-    priceClass: "PriceClass_All",
-    compress: true,
-
-    // Custom cache behaviors
-    additionalBehaviors: {
-      "/api/*": {
-        cachePolicy: "CachingDisabled",
-        originRequestPolicy: "AllViewer",
-      },
-    },
-  },
-
-  // Resource linking for type-safe access
-  link: [sesEmail, database], // Auto-typed in your app
-});
+  return (
+    <div>
+      {/* Your blog posts */}
+    </div>
+  );
+}
 ```
 
-**Live Development:**
+**2. On-Demand Revalidation (Advanced)**
 
-- **SST Console**: Real-time function logs and metrics
-- **Local Development**: Lambda functions run locally with `sst dev`
-- **Hot Reload**: Instant updates without full redeployment
-- **Environment Sync**: Local environment matches deployed infrastructure
-
-**Advanced Deployment Features:**
-
-- **Blue-Green Deployments**: Zero-downtime deployments through stages
-- **Rollback Capabilities**: Quick rollback to previous versions
-- **Canary Releases**: Gradual traffic shifting for safer deployments
-- **Multi-Region**: Deploy to multiple AWS regions simultaneously
-
-### Performance Benchmarks
-
-**Cold Start Performance (ARM64 vs x86_64):**
-
-```
-ARM64 (Graviton2) - Node.js 20.x:
-├── Cold Start: ~100-150ms (improved with Next.js 15 optimizations)
-├── Warm Execution: ~3-5ms
-├── Memory Efficiency: +20% better than x86_64
-└── Bundle Size: 15-20% smaller with enhanced tree shaking
-
-x86_64 (Intel) - Node.js 20.x:
-├── Cold Start: ~150-200ms
-├── Warm Execution: ~5-7ms
-├── Cost: 34% higher than ARM64
-└── Compatibility: Wider third-party library support
-```
-
-**Bundle Size Optimizations:**
-
-- **Enhanced Tree Shaking**: Aggressive dead code elimination with Next.js 15 improvements
-- **Advanced Code Splitting**: Automatic route-based splitting with better chunk optimization
-- **Modern Compression**: Brotli compression with improved compression ratios
-- **ES2022+ Target**: Smaller bundles targeting modern JavaScript features
-- **Server Actions Optimization**: Dead code elimination removes unused Server Actions from client bundle
-- **Import Optimization**: Enhanced `optimizePackageImports` for better tree shaking
-- **Dynamic Imports**: Improved lazy loading with better chunk strategies
-
-### Migration from Other Platforms
-
-**From Vercel:**
+Create an API route to trigger revalidation:
 
 ```typescript
-// Vercel equivalent features in SST
-new sst.aws.Nextjs("NextApp", {
-  // Vercel's ISR equivalent
-  experimental: {
-    incrementalCacheHandlerPath: "./cache-handler.js",
-  },
+// src/app/api/revalidate/route.ts
+import { revalidatePath } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
 
-  // Vercel's Edge Functions equivalent
-  middleware: "./middleware.ts",
+export async function POST(request: NextRequest) {
+  const { path } = await request.json();
 
-  // Vercel's Analytics equivalent (via CloudWatch)
-  cloudfront: {
-    webAclId: webAcl.id, // AWS WAF for bot protection
-  },
-});
+  try {
+    revalidatePath(path);
+    return NextResponse.json({ revalidated: true });
+  } catch (err) {
+    return NextResponse.json({ error: "Error revalidating" }, { status: 500 });
+  }
+}
 ```
 
-**From Netlify:**
+**3. Tag-based Revalidation**
+
+For more granular control, use cache tags:
 
 ```typescript
-// Netlify equivalent features
-new sst.aws.Nextjs("NextApp", {
-  // Netlify Functions equivalent
-  api: {
-    routes: {
-      "POST /api/contact": "./src/api/contact.ts",
-    },
-  },
+// src/app/blog/[id]/page.tsx
+export default async function BlogPost({ params }: { params: { id: string } }) {
+  const post = await fetch(`https://api.example.com/posts/${params.id}`, {
+    next: {
+      revalidate: 3600,
+      tags: ['posts', `post-${params.id}`]
+    }
+  });
 
-  // Netlify Forms equivalent (via SES integration)
-  link: [sesEmail],
-});
+  return <div>{/* Post content */}</div>;
+}
+
+// API route to revalidate specific tags
+// src/app/api/revalidate-tag/route.ts
+import { revalidateTag } from 'next/cache';
+
+export async function POST(request: NextRequest) {
+  const { tag } = await request.json();
+  revalidateTag(tag);
+  return NextResponse.json({ revalidated: true });
+}
 ```
 
-### Advanced Configuration Examples
+### OpenNext ISR Infrastructure
 
-**Multi-Environment Setup:**
+When you deploy with ISR, OpenNext automatically creates:
+
+```
+AWS Resources for ISR:
+├── S3 Bucket: Static cache storage
+├── DynamoDB Table: Cache metadata and tags
+├── Lambda Functions: Cache management
+└── CloudFront: CDN with cache invalidation
+```
+
+### CloudFront Cache Invalidation
+
+**Important**: ISR updates the S3 cache, but CloudFront cache needs manual invalidation for immediate updates.
 
 ```typescript
-// Production optimizations
-const prodConfig = isProd($app.stage)
-  ? {
-      lambda: {
-        runtime: "nodejs20.x",
-        architecture: "arm64",
-        memory: "2048 MB",
-        provisionedConcurrency: 10, // Eliminate cold starts
-      },
-      cloudfront: {
-        priceClass: "PriceClass_All",
-        compress: true,
+// utils/cloudfront-invalidation.ts
+import { CloudFrontClient, CreateInvalidationCommand } from "@aws-sdk/client-cloudfront";
 
-        // Production caching strategy
-        additionalBehaviors: {
-          "/_next/static/*": {
-            cachePolicy: "CachingOptimized",
-            compress: true,
-            viewerProtocolPolicy: "redirect-to-https",
-          },
+const cloudFront = new CloudFrontClient({});
+
+export async function invalidateCloudFrontPaths(paths: string[]) {
+  await cloudFront.send(
+    new CreateInvalidationCommand({
+      DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+      InvalidationBatch: {
+        CallerReference: `${Date.now()}`,
+        Paths: {
+          Quantity: paths.length,
+          Items: paths,
         },
       },
-    }
-  : {
-      // Development optimizations
-      lambda: {
-        memory: "1024 MB",
-        // No provisioned concurrency for dev
-      },
-      cloudfront: {
-        priceClass: "PriceClass_100", // North America & Europe only
-      },
-    };
+    }),
+  );
+}
 
-new sst.aws.Nextjs("NextApp", {
-  ...baseConfig,
-  ...prodConfig,
-});
+// Usage in API route
+export async function POST(request: NextRequest) {
+  const { path } = await request.json();
+
+  // Revalidate Next.js cache
+  revalidatePath(path);
+
+  // Invalidate CloudFront cache for immediate update
+  await invalidateCloudFrontPaths([path]);
+
+  return NextResponse.json({ revalidated: true });
+}
 ```
 
-**Database Integration:**
+### ISR Best Practices for This Project
+
+**1. Cost Management**
+
+- First 1,000 CloudFront invalidations per month are free
+- Use wildcard paths (`/blog/*`) for multiple invalidations
+- Consider using longer revalidation times for cost efficiency
+
+**2. Contact Form Use Case**
+Since our project focuses on a contact form, ISR is most useful for:
+
+- Testimonials or feedback pages that update periodically
+- Blog posts or documentation
+- Product updates or announcements
+
+**3. Environment Configuration**
 
 ```typescript
-// PostgreSQL with RDS
-const database = new sst.aws.Postgres("Database", {
-  engine: "postgres15.4",
-  scaling: {
-    min: isProd($app.stage) ? 0.5 : 0,
-    max: isProd($app.stage) ? 16 : 2,
-  },
-});
-
-// Next.js app with database link
+// sst.config.ts - ISR requires specific configuration
 new sst.aws.Nextjs("NextApp", {
-  link: [database],
   environment: {
-    DATABASE_URL: database.connectionString,
+    CLOUDFRONT_DISTRIBUTION_ID: $interpolate`${nextApp.cloudfront.id}`,
   },
+  // ISR works automatically with OpenNext - no special config needed
 });
 ```
 
-**Custom Cache Layer:**
+### Testing ISR Locally
 
-```typescript
-// Redis for session storage and caching
-const redis = new sst.aws.Redis("Cache", {
-  engine: "redis7.x",
-  nodeType: "cache.t3.micro",
-});
+```bash
+# Build and test ISR behavior
+npm run build
+npm run start
 
-new sst.aws.Nextjs("NextApp", {
-  link: [redis],
-  environment: {
-    REDIS_URL: redis.connectionString,
-  },
-});
+# Check ISR cache hits/misses (development)
+NEXT_PRIVATE_DEBUG_CACHE=1 npm run start
 ```
 
-### Next.js 15 Feature Support Matrix
+### Troubleshooting ISR Issues
 
-The following table shows the support status for Next.js 15 features in OpenNext v3.6.2:
+**Common Issues**:
 
-| Feature Category         | Feature                   | Support Status  | Notes                              |
-| ------------------------ | ------------------------- | --------------- | ---------------------------------- |
-| **Core Framework**       | React 19 Support          | ✅ Full         | Complete React 19 RC compatibility |
-|                          | App Router                | ✅ Full         | All App Router features supported  |
-|                          | Pages Router              | ✅ Full         | Backward compatibility maintained  |
-|                          | TypeScript Config         | ✅ Full         | `next.config.ts` support           |
-|                          | ESLint 9                  | ✅ Full         | Flat config and legacy support     |
-| **Routing & Navigation** | Dynamic Routes `[slug]`   | ✅ Full         | Enhanced performance               |
-|                          | Parallel Routes `@folder` | ✅ Full         | Complete implementation            |
-|                          | Intercepting Routes `(.)` | ✅ Full         | Modal patterns supported           |
-|                          | Route Groups `(group)`    | ✅ Full         | Organization patterns              |
-|                          | Middleware                | ✅ Full         | Edge Runtime supported             |
-| **Rendering**            | Server Components         | ✅ Full         | Optimized streaming                |
-|                          | Client Components         | ✅ Full         | Hydration improvements             |
-|                          | Server Actions            | ✅ Full         | Enhanced security features         |
-|                          | Static Generation         | ✅ Full         | Improved build performance         |
-|                          | SSR                       | ✅ Full         | Enhanced streaming support         |
-|                          | ISR                       | ✅ Full         | S3-based cache implementation      |
-| **Caching**              | Route Handler Caching     | ✅ Full         | New opt-in model                   |
-|                          | Client Router Cache       | ✅ Full         | `staleTime` configuration          |
-|                          | Fetch Caching             | ✅ Full         | Enhanced invalidation              |
-|                          | Custom Cache Handlers     | ✅ Full         | Advanced cache control             |
-| **Components**           | `<Form>` Component        | ✅ Full         | Prefetching and navigation         |
-|                          | `<Image>` Component       | ✅ Full         | Automatic sharp integration        |
-|                          | `<Script>` Component      | ✅ Full         | Loading strategies                 |
-| **Development**          | Turbopack (Dev)           | ✅ Full         | Stable development bundler         |
-|                          | Fast Refresh              | ✅ Full         | Server Components HMR              |
-|                          | Error Overlay             | ✅ Full         | Enhanced error messages            |
-|                          | Static Route Indicator    | ✅ Full         | Development visual aids            |
-| **APIs & Functions**     | API Routes                | ✅ Full         | App Router implementation          |
-|                          | Route Handlers            | ✅ Full         | GET/POST/PUT/DELETE support        |
-|                          | `unstable_after`          | ✅ Full         | Post-response execution            |
-|                          | Async Request APIs        | ✅ Full         | `cookies()`, `headers()`, etc.     |
-| **Build & Bundle**       | Bundle Optimization       | ✅ Full         | Enhanced tree shaking              |
-|                          | External Packages         | ✅ Full         | `bundlePagesRouterDependencies`    |
-|                          | Code Splitting            | ✅ Full         | Improved chunk strategies          |
-|                          | Dead Code Elimination     | ✅ Full         | Server Actions optimization        |
-| **Experimental**         | React Compiler            | 🧪 Experimental | Available when enabled             |
-|                          | Partial Prerendering      | 🧪 Experimental | Preview implementation             |
-|                          | `useCache` Directive      | 🧪 Experimental | When React cache is stable         |
+1. **Cache Not Updating**: Check revalidation time and CloudFront invalidation
+2. **Build Errors**: Ensure `fetch` calls have proper error handling
+3. **Missing Resources**: Verify AWS permissions for S3 and DynamoDB access
 
-**Legend:**
+**Debug Commands**:
 
-- ✅ **Full**: Complete implementation and production-ready
-- 🧪 **Experimental**: Available but marked as experimental
-- ⚠️ **Partial**: Some limitations or known issues
-- ❌ **Not Supported**: Feature not available
+```bash
+# Check build output for ISR pages
+npm run build # Look for "(ISR)" in build output
 
-**Performance Improvements in Next.js 15 + OpenNext:**
+# Test revalidation API
+curl -X POST http://localhost:3000/api/revalidate \
+  -H "Content-Type: application/json" \
+  -d '{"path": "/blog"}'
+```
 
-- **76.7% faster** local server startup with Turbopack
-- **96.3% faster** code updates with Fast Refresh
-- **45.8% faster** initial route compile
-- **100-150ms** cold start times on ARM64 (vs 150-200ms on x86_64)
-- **15-20% smaller** bundle sizes with enhanced tree shaking
+> **📋 Note**: ISR requires Node.js runtime and is not supported with static exports. Our OpenNext setup handles this automatically.
+
+## Performance Characteristics
+
+**Cold Start Performance (ARM64 recommended)**:
+
+- ~100-150ms for contact form API endpoints
+- ~3-5ms warm execution times
+- 34% cost savings vs x86_64 architecture
+
+**Bundle Optimization for This Project**:
+
+- Contact form uses Server Actions (reduces client JavaScript)
+- Static assets cached via CloudFront edge locations
+- ARM64 Graviton2 provides better performance/cost ratio
+- ISR reduces API calls for static content
+
+**ISR Performance Benefits**:
+
+- Pre-rendered pages serve instantly from CloudFront
+- Background regeneration doesn't block user requests
+- Reduced server load for frequently accessed content
+
+---
+
+_For more details on specific AWS services and configurations, see the [AWS Deployment Guide](./aws-deployment.md)._

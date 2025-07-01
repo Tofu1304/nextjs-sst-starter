@@ -1,6 +1,64 @@
 # Documentation Overview
 
-This directory contains comprehensive documentation for the Next.js SST Starter project.
+This directory contains focused documentation for the Next.js SST Starter project.
+
+## Documentation Structure
+
+### 📖 Core Documentation
+
+- **[Architecture Overview](./architecture.md)** - AWS infrastructure and OpenNext integration
+- **[AWS Deployment Guide](./aws-deployment.md)** - Step-by-step AWS setup and deployment
+- **[Development Setup](./development-setup.md)** - Development tools and local setup
+- **[Environment Guide](./deployment-vs-runtime-environment.md)** - SST environments explained
+
+### 🎯 Project Focus
+
+This documentation focuses on:
+
+- **Project-specific configurations** and edge cases
+- **SST and AWS setup** for this starter
+- **Common issues** and their solutions
+- **Deployment workflows** and best practices
+
+### 🚫 What's Not Covered
+
+We don't extensively document generic topics like:
+
+- General Next.js features (see [Next.js docs](https://nextjs.org/docs))
+- React fundamentals (see [React docs](https://react.dev/))
+- Basic TypeScript usage (see [TypeScript docs](https://www.typescriptlang.org/docs/))
+
+## Quick Navigation
+
+### For Getting Started
+
+1. [Development Setup](./development-setup.md) - Local development environment
+2. [AWS Deployment Guide](./aws-deployment.md) - AWS configuration and deployment
+3. [Environment Guide](./deployment-vs-runtime-environment.md) - Understanding environments
+
+### For Understanding the Stack
+
+1. [Architecture Overview](./architecture.md) - How everything fits together
+
+## Recent Updates (January 2025)
+
+### ✅ Streamlined Documentation
+
+- Removed excessive Next.js feature listings
+- Focused on project-specific configurations
+- Updated [`sst-env.d.ts`](../src/typings/sst-env.d.ts) documentation (manually maintained for type safety)
+- Documented known edge cases and workarounds
+
+### 🎯 Project-Specific Content
+
+- Contact form with SES integration
+- Windows development with Docker
+- SSO authentication setup
+- Build process limitations
+
+---
+
+📚 **Stack**: Next.js 15.3.2 | OpenNext 3.6.2 | SST 3.17+ | Node.js 20.x
 
 ## Documentation Structure
 

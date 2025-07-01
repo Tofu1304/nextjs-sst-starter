@@ -10,12 +10,6 @@ interface ContactFormPayload {
   message: string;
 }
 
-/**
- * Sends a contact form email using AWS SES
- * @param payload - The contact form data containing name, email, and message
- * @throws {Error} When email sending fails
- * @returns {Promise<void>} Resolves when email is sent successfully
- */
 export const sendContactFormEmail = async ({ name, email, message }: ContactFormPayload) => {
   const client = new SESv2Client();
 

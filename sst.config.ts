@@ -49,6 +49,9 @@ export default $config({
           zone: "YOUR_DOMAIN_HOSTED_ZONE_ID",
         }),
       },
+      server: {
+        architecture: "arm64",
+      },
       environment: {
         DEPLOYMENT_ENV: $app.stage,
       },

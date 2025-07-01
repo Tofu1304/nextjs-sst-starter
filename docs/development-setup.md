@@ -269,29 +269,7 @@ export default MyComponent;
 
 > **💡 Tip**: You can extend the snippets file with additional patterns like hooks, API routes, or page components.
 
-## Future Improvements
-
-### Testing Setup
-
-Consider adding:
-
-- **Vitest**: Fast unit testing
-- **Testing Library**: Component testing
-- **Playwright**: E2E testing
-
-### Additional Tools
-
-- **Storybook**: Component development
-- **Bundle Analyzer**: Build size monitoring
-- **Commitlint**: Conventional commit messages
-
-### Performance Monitoring
-
-- **Lighthouse CI**: Automated performance testing
-- **Bundle Analysis**: Track bundle size changes
-- **Core Web Vitals**: Monitor real user metrics
-
-### Toast Notifications
+## Toast Notifications
 
 **React Hot Toast Integration:**
 
@@ -335,3 +313,42 @@ toast.dismiss(loadingToast);
 - **Duration**: Customizable via `TOASTER_DURATION_MS` constant
 - **Positioning**: Default positioning (top-center)
 - **Styling**: Integrated with application design system
+
+### Lambda Warming Script
+
+**Problem**: SST's default 5-minute warming interval is too long - Lambdas don't stay warm for the full duration, causing cold starts.
+
+**Solution**: Custom `warmer.js` script with 1-minute intervals (optimal duration found through testing, see [SST issue #5534](https://github.com/sst/sst/issues/5534)):
+
+```javascript
+// warmer.js - Optimized 1-minute warming strategy
+const URL_TO_VISIT = "https://yourdomain.com";
+const CONCURRENT_VISITS = 100;
+
+// Keep Lambdas warm every 1 minute (optimal interval)
+setInterval(runConcurrentVisits, 60 * 1000);
+```
+
+**Why 1 minute works better**:
+
+- Lambdas stay consistently warm without cold starts
+- More reliable than SST's default 5-minute interval
+- Prevents the Lambda execution context from being destroyed
+
+**Configuration Steps**:
+
+1. **Update URL**: Change `URL_TO_VISIT` to your deployed domain
+2. **Run script**: `node warmer.js`
+3. **Monitor**: Watch console output for consistent response times
+
+**Benefits**:
+
+- Eliminates cold starts during active periods
+- More predictable performance than default warming
+- Cost-effective compared to provisioned concurrency
+
+**Usage Notes**:
+
+- Run during business hours or peak traffic periods
+- Stop script when not needed to avoid unnecessary costs
+- Monitor CloudWatch costs to ensure optimization

@@ -22,7 +22,7 @@ Setting up IAM Identity Center allows you to manage user access centrally and se
 9. Select the newly created group
 10. Attach the permission set you created
 
-**Benefits:** This setup allows you to grant groups of users granular access to specific AWS services through policies. You maintain one root account where you can invite users and control their access to different parts of your AWS infrastructure (console access, specific services, etc.).
+This allows centralized user management with granular AWS service access control.
 
 ## AWS SSO Configuration
 
@@ -126,18 +126,7 @@ For quick deployment without a custom domain, you can use the default CloudFront
    NextApp: https://d123abc456def.cloudfront.net
    ```
 
-**Benefits of Domain-less Deployment:**
-
-- ✅ Faster setup (no domain purchase or DNS configuration required)
-- ✅ No additional costs for domain registration or Route53 hosted zones
-- ✅ Immediate deployment without DNS propagation wait times
-- ✅ Perfect for development, testing, or internal applications
-
-**Limitations:**
-
-- ❌ URL is not user-friendly (random CloudFront domain)
-- ❌ Cannot customize the domain name
-- ❌ SSL certificate is managed by AWS (cannot use custom certificates)
+This approach requires no domain setup and deploys immediately. For custom domains, see Option 2 below.
 
 ### Option 2: Custom Domain Configuration
 

@@ -1,24 +1,30 @@
-# Deployment vs runtime environment
+# Deployment vs Runtime Environment
 
-We can have different deployment environments:
+This project uses two types of environments that serve different purposes:
 
-- `https://dev.foobar.com/`
-- `https://uat.foobar.com/`
-- `https://staging.foobar.com/`
-- `https://foobar.com/`
+**Deployment Environments** (SST stages):
 
-In our case we just have `dev` and `prod` which we specify through the `stage` parameter when we invoke `sst deploy` (see [ci-cd-dev.yml](https://github.com/bojidaryovchev/nextjs-sst-starter/blob/main/.github/workflows/ci-cd-dev.yml) and [ci-cd-prod.yml](https://github.com/bojidaryovchev/nextjs-sst-starter/blob/main/.github/workflows/ci-cd-prod.yml))
+- `dev` - Development deployment (`https://dev.yoursite.com`)
+- `prod` - Production deployment (`https://yoursite.com`)
 
-We are then passing the `$app.stage` to our Next.js app through the `DEPLOYMENT_ENV` variable (see [sst.config.ts](https://github.com/bojidaryovchev/nextjs-sst-starter/blob/main/sst.config.ts))
+**Runtime Environments** (Node.js modes):
 
-The runtime environment is referenced by `NODE_ENV`:
+- `development` - Local development (`npm run dev`)
+- `production` - Built application (`npm run build`)
 
-- when we execute `npm run dev` the `NODE_ENV` is set to `development`
-- when we execute `npm run build` the `NODE_ENV` is set to `production`
+## How They Work Together
 
-Whenever we invoke `sst deploy` it builds our app therefore its runtime environment will always be `production`
+When you run `sst deploy --stage dev`, SST:
 
-We have devised utils in `src/lib/env.utils.ts` to help us easily distinguish between them. These utilities help ensure consistency across the project when working with different environment types.
+1. Sets `DEPLOYMENT_ENV=dev` in your Next.js app
+2. Runs `npm run build` (which sets `NODE_ENV=production`)
+3. Deploys to your dev AWS infrastructure
+
+When you run `./start-local-sso.sh`:
+
+1. `DEPLOYMENT_ENV` defaults to `dev`
+2. `NODE_ENV=development` for hot reloading
+3. AWS credentials via SSO for local SES testing
 
 ## Environment Utilities
 

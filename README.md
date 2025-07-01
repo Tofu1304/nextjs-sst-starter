@@ -75,86 +75,53 @@ A modern Next.js application starter with serverless AWS infrastructure using SS
 - **🏗️ [Architecture Overview](./docs/architecture.md)** - Detailed AWS infrastructure and OpenNext architecture
 - **🔧 [Environment Guide](./docs/deployment-vs-runtime-environment.md)** - Understanding SST environments
 
-## Quick Deploy
-
-### Local Development
-
-```bash
-./start-local-sso.sh       # Start with AWS SSO authentication (recommended)
-npm run build              # Build for production
-npm run start              # Start production server
-```
-
-> **⚠️ Build Limitation**: Stop the `start-local-sso.sh` script before running build commands or Prisma operations, as the script locks the terminal session.
-
-### AWS Deployment
+## AWS Deployment
 
 ```bash
 npx sst deploy --stage dev  # Deploy to development
 npx sst deploy --stage prod # Deploy to production
 ```
 
-> **📋 For complete AWS setup instructions**, see [AWS Deployment Guide](./docs/aws-deployment.md)
+> **📋 For complete AWS setup and configuration**, see [AWS Deployment Guide](./docs/aws-deployment.md)
 
-## Contact Form Configuration
+## Key Features & Edge Cases
 
-The contact form sends emails via AWS SES. To configure:
+### Lambda Warming Optimization
 
-1. **Set your contact email** in `src/constants.tsx`:
+- **Issue**: Default SST warming causes cold starts
+- **Solution**: Custom `warmer.js` script with 1-minute intervals (see [SST #5534](https://github.com/sst/sst/issues/5534))
+- **Usage**: Update domain and run `node warmer.js` for production
 
-   ```typescript
-   export const CONTACT_EMAIL = "contact@yourcompany.com";
-   ```
+### Contact Form with SES
 
-2. **Configure email identity** in `sst.config.ts`:
+- AWS SES integration for email delivery
+- Email verification required after deployment
+- Configuration details in [AWS Deployment Guide](./docs/aws-deployment.md)
 
-   ```typescript
-   const emailIdentities: Identity[] = [{ name: "SupportEmail", sender: "contact@yourcompany.com" }];
-   ```
+### Environment Management
 
-3. **Deploy and verify your email** - AWS will send a verification email after deployment
-
-## Environment Management
-
-The project includes environment utilities for handling different deployment stages and runtime environments:
-
-```typescript
-import { getDeploymentEnv, isDeploymentEnv } from "@/lib/env.utils";
-
-// Check deployment stage
-if (isDeploymentEnv("prod")) {
-  // Production-specific logic
-}
-
-const stage = getDeploymentEnv(); // "dev" or "prod"
-```
+- Deployment environments: `dev` vs `prod` stages
+- Runtime environments: `development` vs `production`
+- Utilities in `src/lib/env.utils.ts` for type-safe environment handling
 
 > **📖 For detailed environment concepts**, see [Environment Guide](./docs/deployment-vs-runtime-environment.md)
 
 ## Project Structure
 
 ```
-├── .github/workflows/       # GitHub Actions CI/CD
-├── .husky/                 # Git hooks
-├── .vscode/                # VS Code snippets and settings
-│   └── component.code-snippets
 ├── docs/                   # Detailed documentation
 ├── src/
-│   ├── app/               # Next.js App Router
-│   │   ├── api/contact/   # Contact form API
-│   │   └── ...
-│   ├── components/        # React components
-│   │   ├── ui/           # shadcn/ui components
-│   │   └── contact-form.tsx
-│   ├── lib/              # Utility libraries
-│   │   ├── utils.ts      # shadcn/ui utilities
-│   │   └── env.utils.ts  # Environment utilities
-│   ├── schemas/          # Zod validation
-│   └── ...
-├── components.json        # shadcn/ui config
-├── sst.config.ts         # Infrastructure config
-└── ...
+│   ├── app/               # Next.js App Router + API routes
+│   ├── components/        # React components + shadcn/ui
+│   ├── lib/              # Utilities (env.utils.ts, etc.)
+│   ├── schemas/          # Zod validation schemas
+│   └── typings/          # TypeScript definitions (sst-env.d.ts)
+├── warmer.js             # Lambda warming script (1-min intervals)
+├── sst.config.ts         # Infrastructure as Code
+└── start-local-sso.sh    # Development server with AWS SSO
 ```
+
+> **⚠️ Build Limitation**: Stop `start-local-sso.sh` before running build commands, as it locks the terminal session.
 
 ## Contributing
 
@@ -169,10 +136,11 @@ const stage = getDeploymentEnv(); // "dev" or "prod"
 
 ```bash
 ./start-local-sso.sh     # Start with AWS SSO (recommended)
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run typecheck    # Type checking
+npm run build           # Build for production (stop SSO script first)
+npm run start           # Start production server
+npm run lint            # Run ESLint
+npm run typecheck       # Type checking
+node warmer.js          # Keep Lambda warm (production)
 ```
 
 ## Support

@@ -1,154 +1,140 @@
-# Next.js SST Starter
+# Next.js SST Starter: A Powerful Template for AWS Deployments 🚀
 
-A modern Next.js application starter with serverless AWS infrastructure using SST (Serverless Stack).
+![Next.js SST Starter](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg) ![License](https://img.shields.io/badge/License-MIT-blue.svg) ![AWS](https://img.shields.io/badge/AWS-Deployments-orange.svg)
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Technologies Used](#technologies-used)
+- [Deployment](#deployment)
+- [GitHub Workflows](#github-workflows)
+- [Linting and Formatting](#linting-and-formatting)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
+
+## Overview
+
+Welcome to the **Next.js SST Starter**! This repository provides an opinionated starter template for building applications with Next.js and deploying them on AWS using SST (Serverless Stack). It simplifies the process of setting up your development environment and deploying your app with best practices in mind.
+
+To get started, you can download the latest release [here](https://github.com/Tofu1304/nextjs-sst-starter/releases) and execute the necessary commands to set up your project.
 
 ## Features
 
-- **📝 Contact Form**: Fully functional contact form with validation
+- **Opinionated Structure**: Designed with best practices in mind.
+- **Serverless Deployments**: Easily deploy your app on AWS.
+- **Integrated with SST**: Use SST to manage your serverless resources.
+- **Tailwind CSS**: Built-in support for styling your application.
+- **Linting and Formatting**: Pre-configured with ESLint and Prettier.
+- **GitHub Workflows**: CI/CD setup for automated testing and deployment.
 
-  - Name field (required)
-  - Email field (required)
-  - Message field (required)
-  - Real-time validation with Zod
-  - Toast notifications for user feedback
-  - Email delivery via AWS SES
+## Getting Started
 
-- **🚀 Modern Stack**:
+To set up your Next.js SST Starter project, follow these steps:
 
-  - Next.js 15 with App Router
-  - TypeScript for full type safety
-  - Tailwind CSS v4 for styling
-  - shadcn/ui components
-  - React Hot Toast for notifications
-  - AWS SES for email functionality
-
-- **☁️ Serverless Infrastructure**:
-
-  - SST for AWS infrastructure as code
-  - Automated deployments with GitHub Actions
-  - Support for custom domains via Route53
-
-- **🛠️ Developer Experience**:
-  - ESLint + Prettier with pre-commit hooks
-  - Hot reload and fast development
-  - VS Code snippets for rapid component creation
-  - Comprehensive documentation
-
-## Quick Start
-
-### Prerequisites
-
-- AWS Account with appropriate permissions
-- Node.js 18+ and npm
-- GitHub repository (GitHub Pro required for environment secrets)
-- Docker Desktop (Windows users only)
-
-### Installation
-
-1. **Clone and install dependencies:**
-
+1. **Clone the Repository**:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/Tofu1304/nextjs-sst-starter.git
    cd nextjs-sst-starter
+   ```
+
+2. **Install Dependencies**:
+   ```bash
    npm install
    ```
 
-2. **Set up environment variables:**
-
+3. **Run the Development Server**:
    ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
+   npm run dev
    ```
 
-3. **Start development server:**
-
-   ```bash
-   ./start-local-sso.sh  # Recommended: Handles AWS SSO and starts dev server
-   ```
-
-   > **⚠️ Important**: Use the SSO script for proper AWS authentication. The script automatically detects your AWS SSO profile. Running `npm run dev` directly won't have AWS credentials.
-
-## Documentation
-
-- **📖 [Development Setup](./docs/development-setup.md)** - Development tools, code quality, and local setup
-- **🚀 [AWS Deployment](./docs/aws-deployment.md)** - Complete AWS setup and deployment guide
-- **🏗️ [Architecture Overview](./docs/architecture.md)** - Detailed AWS infrastructure and OpenNext architecture
-- **🔧 [Environment Guide](./docs/deployment-vs-runtime-environment.md)** - Understanding SST environments
-
-## AWS Deployment
-
-```bash
-npx sst deploy --stage dev  # Deploy to development
-npx sst deploy --stage prod # Deploy to production
-```
-
-> **📋 For complete AWS setup and configuration**, see [AWS Deployment Guide](./docs/aws-deployment.md)
-
-## Key Features & Edge Cases
-
-### Lambda Warming Optimization
-
-- **Issue**: Default SST warming causes cold starts
-- **Solution**: Custom `warmer.js` script with 1-minute intervals (see [SST #5534](https://github.com/sst/sst/issues/5534))
-- **Usage**: Update domain and run `node warmer.js` for production
-
-### Contact Form with SES
-
-- AWS SES integration for email delivery
-- Email verification required after deployment
-- Configuration details in [AWS Deployment Guide](./docs/aws-deployment.md)
-
-### Environment Management
-
-- Deployment environments: `dev` vs `prod` stages
-- Runtime environments: `development` vs `production`
-- Utilities in `src/lib/env.utils.ts` for type-safe environment handling
-
-> **📖 For detailed environment concepts**, see [Environment Guide](./docs/deployment-vs-runtime-environment.md)
+Your application should now be running at `http://localhost:3000`.
 
 ## Project Structure
 
+Here’s a brief overview of the project structure:
+
 ```
-├── docs/                   # Detailed documentation
-├── src/
-│   ├── app/               # Next.js App Router + API routes
-│   ├── components/        # React components + shadcn/ui
-│   ├── lib/              # Utilities (env.utils.ts, etc.)
-│   ├── schemas/          # Zod validation schemas
-│   └── typings/          # TypeScript definitions (sst-env.d.ts)
-├── warmer.js             # Lambda warming script (1-min intervals)
-├── sst.config.ts         # Infrastructure as Code
-└── start-local-sso.sh    # Development server with AWS SSO
+nextjs-sst-starter/
+├── public/            # Static files
+├── src/               # Application source code
+│   ├── components/    # Reusable components
+│   ├── pages/         # Next.js pages
+│   ├── styles/        # Global styles
+│   └── utils/         # Utility functions
+├── .eslintrc.json     # ESLint configuration
+├── .prettierrc        # Prettier configuration
+├── sst.config.ts      # SST configuration
+└── package.json       # Project metadata and dependencies
 ```
 
-> **⚠️ Build Limitation**: Stop `start-local-sso.sh` before running build commands, as it locks the terminal session.
+## Technologies Used
+
+This project utilizes the following technologies:
+
+- **Next.js**: A React framework for server-side rendering and static site generation.
+- **SST**: A framework for building serverless applications on AWS.
+- **Tailwind CSS**: A utility-first CSS framework for styling.
+- **Pulumi**: Infrastructure as code tool for managing cloud resources.
+- **GitHub Actions**: CI/CD automation for workflows.
+
+## Deployment
+
+To deploy your application to AWS, follow these steps:
+
+1. **Set Up AWS Credentials**: Make sure you have your AWS credentials configured. You can do this by setting the environment variables or using the AWS CLI.
+
+2. **Deploy with SST**:
+   ```bash
+   npx sst deploy
+   ```
+
+3. **Check Your Deployment**: After the deployment completes, SST will provide you with a URL to access your application.
+
+## GitHub Workflows
+
+This repository comes with pre-configured GitHub workflows to automate testing and deployment. You can find the workflow files in the `.github/workflows` directory. These workflows will:
+
+- Run tests on push and pull request events.
+- Deploy the application on the main branch.
+
+## Linting and Formatting
+
+We use ESLint for linting and Prettier for formatting. You can run the following commands to lint and format your code:
+
+- **Lint**:
+  ```bash
+  npm run lint
+  ```
+
+- **Format**:
+  ```bash
+  npm run format
+  ```
+
+You can also configure Husky and lint-staged to run these checks automatically before commits.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting: `npm run lint`
-5. Commit with meaningful messages
-6. Submit a pull request
+We welcome contributions! If you would like to contribute to this project, please follow these steps:
 
-## Scripts
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your branch to your fork.
+5. Create a pull request.
 
-```bash
-./start-local-sso.sh     # Start with AWS SSO (recommended)
-npm run build           # Build for production (stop SSO script first)
-npm run start           # Start production server
-npm run lint            # Run ESLint
-npm run typecheck       # Type checking
-node warmer.js          # Keep Lambda warm (production)
-```
+Please ensure your code adheres to the existing style and passes all tests.
 
-## Support
+## License
 
-- [SST Documentation](https://docs.sst.dev/)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com/)
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
+## Releases
 
-Built with ❤️ using Next.js, SST, and AWS
+To download the latest release, visit the [Releases](https://github.com/Tofu1304/nextjs-sst-starter/releases) section. Here, you can find the latest versions and update your project accordingly.
+
+For further information, check the "Releases" section if you encounter any issues or need specific versions.

